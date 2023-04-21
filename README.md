@@ -1,3 +1,3 @@
 # ensai-seminaire-bigdata-part1
 
-Partie 1: présentation onyxia
+Partie 2: présentation d'un cas d'usage `Elastic`
