@@ -1,0 +1,20 @@
+path_linkage = "temp/relevanc_post_linkage.parquet"
+path_levensthein = "output/levensthein.parquet"
+path_CA_produits_stats = "temp/CA_by_step.parquet"
+path_CA_coicop = "temp/CA_by_coicop.parquet"
+path_examples_siamese = "siamese/embedding/example_best_match.parquet"
+siamese_model_history = "siamese/models_results/latest/model_history.parquet"
+siamese_distance_dataframe = "temp/cosine_distance_calories_siamese_linkage.parquet"
+siamese_diff_elastic = "temp/cosine_distance_calories_elastic_linkage.parquet"
+siamese_test_perf = "siamese/models_results/latest/performance.parquet"
+siamese_test_perf_subset = gsub(".parquet", "_2000.parquet", siamese_test_perf)
+siamese_perf_coicop = "siamese/models_results/latest/match_in_topK_coicop.parquet"
+siamese_perf_coicop_subset = gsub(".parquet", "_2000.parquet", siamese_perf_coicop)
+path_openfood_clean="data_post_cleaning/openfood_coicop.parquet"
+path_example_prediction="output/example_prediction.parquet"
+path_mismatch_elastic="output/elastic_match_pairs.parquet"
+
+path_wordcloud_relevanc_start = "output/relevanc_start.png"
+path_wordcloud_relevanc_clean = "output/relevanc_clean.png"
+path_wordcloud_openfood_start = "output/openfood_start.png"
+path_wordcloud_openfood_clean = "output/openfood_start.png"

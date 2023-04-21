@@ -1,115 +1,475 @@
 ---
-title: La plateforme Onyxia
+title: Fuzzy matching on big-data
 subtitle: |
-  **[Un environnement de data science à l'état de l'art]{.orange}**
-author: Romain Avouac et [Lino Galiana](https://www.linogaliana.fr/)
-# date: 
+  **[An illustration with \
+  scanner and crowd-sourced \
+  nutritional datasets]{.orange}**
+author: |
+  [Lino Galiana](https://www.linogaliana.fr/)
+institute : "Insee (French official statistics administration)"
+date: today
 slide-number: true
 footer: |
-  Présentation à l'ENSAI
+  **Présentation séminaire big data ENSAI**
 # uncomment for French presentations:
-lang: fr-FR
+#lang: fr-FR
 # for blind readers:
 slide-tone: false
 # for @olevitt:
-chalkboard: # press the B key to toggle chalkboard
-  theme: whiteboard
+#chalkboard: # press the B key to toggle chalkboard
+#  theme: whiteboard
 # uncomment to use the multiplex mode:
 #multiplex: true
 format:
   # pick the light mode (onyxia-revealjs) or the dark mode (onyxia-dark-revealjs)
   onyxia-revealjs:
   #onyxia-dark-revealjs:
-    output-file: light.html
-controls: true
+    output-file: index.html
+echo: false
 css: custom.css
-from: markdown+emoji
+output-dir: public
+self-contained: true
 ---
 
+```{r}
+library(kableExtra)
+library(magick)
+```
 
-## Qui sommes nous ?
-
-- DIIT (Division Innovation et Instruction Technique) & SSP Lab
-
-- développement du projet de plateforme datascience [Onyxia](https://github.com/InseeFrLab/onyxia) et gestion de l'instance [SSP Cloud](https://datalab.sspcloud.fr)
-
-- accompagnement de projets open-data
-
-- diffusion des bonnes pratiques
-
-<innovation@insee.fr>, <romain.avouac@insee.fr>
+## Introduction
 
 
-# Présentation d'Onyxia
+:::{.callout-tip}
 
-## Pourquoi Onyxia ?
+## Perspective
 
-- L'infrastructure est souvent un **frein à l'innovation**
+Understand what is the [__nature, nutritional or environmental quality__]{.green2} of food products consumed
+help to develop a [__sustainable and healthy consumption__]{.green2}
 
-- **Mutualisation** d'une infrastructure, de services et de connaissances
+:::
 
-## Grands principes
+[__Applications__]{.orange} emerged to help consumer know better available products:
 
-- Un service de **stockage distribué** de données sous forme d'**objets** (S3)
+::: {.incremental}
+- nutritional characteristics ;
+- packaging
+- carbon footprint
+- ...
+:::
 
-- Une infrastructure cloud-native, basée sur un **orchestrateur de conteneurs** (Kubernetes)
+## Introduction
 
-- Un catalogue de services couvrant l'ensemble du **cycle de vie** des projets de data science, du libre service à la **mise en production**
+:::{.callout-important}
 
-## Catalogue de services
+## Justification
 
-![](img/catalogue.png)
+Crowd-sourced database open up new perspectives on the [__analysis of scanner data at population scale__]{.red2} once they have been matched.
+:::
 
-## Le SSP Cloud
 
-- **Instance** du projet Onyxia hébergée à l'Insee
+- Need to find methods to associate these data sources that scales:
+    + [reliably]{.orange} ;
+    + [flexibly]{.orange} ;
+    + [efficiently]{.orange} {{< fa gauge-high >}}. 
 
-- Des **ressources** dimensionnées pour la data science (RAM, CPU, GPU)
 
-- Une plateforme qui vous est **ouverte** !
+## Teasing
 
-- **Auto-formation** aux grands principes des architectures modernes de data science
+:::{.callout-note}
 
-# Le stockage objet
+## Problematic
 
-## Fonctionnement
+Enrichment of scanner data with several sources of information
+using [__advanced fuzzy matching methods__]{.blue2}
+:::
 
-![](img/minio.png)
+- Use both [search engine approach]{.orange} (`ElasticSearch`) and [embeddings]{.orange} to associate pairs
+- Procedure to minimize [false positives]{.orange}.
 
-## Avantages
 
-- **Stockage cloud** : élastique et donc plus économique
+## Teasing
 
-- **Portabilité** : les objets sont mis à disposition via une API web
+![](header.png)
 
-- **Découplage** du stockage et du moteur de calcul
+# Sources
 
-# L'orchestration de conteneurs
+## Scanner data ([`Relevanc`](https://www.groupe-casino.fr/en/group/activities/e-commerce-new-business-activities/relevanc/) data) {.smaller}
 
-## Pourquoi les conteneurs ?
+<br>
 
-- **Objectif** : encapsuler une application et tout ce dont elle a besoin afin de la **déployer** facilement
+- [__Casino group__]{.orange} (>10% French market):
+    - $\approx$ [11,000]{.orange} supermarkets ;
+    - $\approx$ [250,000]{.orange} different products ;
+    - Both supermarket revenues and fidelity cards levels <br><br>
+    
+:::{.callout-tip}
 
-![](img/server-vm-container.png)
+- Need to be enriched for analysis:
+    - [Geocoding supermarkets]{.moyen} ;
+    - [__Getting products characteristics__]{.green2}.
 
-## Avantage des conteneurs
+:::
 
-- **Légèreté** : ils n'incluent que le strict nécessaire au fonctionnement de l'application
+## Crowd-sourced nutritional data ([`Open Food Facts`](https://fr.openfoodfacts.org/)) 
 
-- **Portabilité** : il est très facile de passer d'un environnement d'exécution à un autre
+- $\approx$ [2 million products]{.orange} (continuously updated)
 
-- **Reproductibilité** : l'application s'exécute de la même manière quel que soit l'environnement sur lequel il est déployé
+. . .
 
-## Pourquoi l'orchestration ?
+| Type of information | Exemples |
+|------------|-------------|
+| Aggregated quality indices | `Nutriscore`, `NOVA` score, `Ecoscore`... |
+| Nutritional information | Energy, carbohydrates, fat... |
+| Product information | Packaging, volume... |
 
-- Déploiements **reproductibles** et **automatisés**
 
-- Adapter les ressources (**scaler**) selon les besoins
+:::{.callout-note}
 
-- **Monitoring** de l'état de santé des applications
+- Access to additional datasets :
+    - [`IRI`](https://www.iriworldwide.com/en-us): aggregator of information for products and supermarkets
+    - [`CIQUAL`](https://ciqual.anses.fr/): database produced by Ministry of Agriculture
+    - From `Wikipedia`, scraped brands in categories where many products with different name or brands (e.g. alcohol) 
 
-## Fonctionnement de Kubernetes
+:::
 
-![](img/kubernetes-archi.png)
 
-# Démonstration
+# Preliminary steps
+
+## Preprocessing ([Details](#data-cleaning-examples)) {.smaller}
+
+1. [Reduce noise]{.orange} in dataset ;
+1. [Harmonize]{.orange} different sources ;
+1. [Identify non-food products]{.orange} despite filtering categories.
+
+```{r}
+#| fig-label: Wordcloud-relevanc
+#| layout-ncol: 2
+#| fig-cap: Wordclouds __before__ preprocessing
+#| fig-subcap: 
+#|   - "Scanner data (`RelevanC`)"
+#|   - "Crowd-sourced nutritional data (`Open Food Facts`)"
+magick::image_read("img/wordcloud_relevanc_start.png")
+magick::image_read("img/wordcloud_openfood_start.png")
+```
+
+## Preprocessing ([Details](#data-cleaning-examples)) {.smaller}
+
+<br>
+
+<input type="checkbox" checked> [Reduce noise]{.orange} in dataset ;  </input><br>
+<input type="checkbox" checked> [Harmonize]{.orange} different sources ;  </input><br>
+<input type="checkbox" checked> [Identify non-food products]{.orange} despite filtering categories.</input>
+
+```{r}
+#| layout-ncol: 2
+#| fig-cap: Wordclouds __after__ preprocessing
+#| fig-subcap: 
+#|   - "Scanner data (`RelevanC`)"
+#|   - "Crowd-sourced nutritional data (`Open Food Facts`)"
+magick::image_read("img/wordcloud_relevanc_clean.png")
+magick::image_read("img/wordcloud_openfood_clean.png")
+```
+
+# Linkage methodology
+
+## General approach {.smaller #linkage}
+
+:::{.callout-tip}
+
+## Objective
+
+- [__Search a given product__]{.green2} in scanner data using nutrients dataset 
+- __From the most to the least certain__ ([some words on implementation here](#implementation))
+
+:::
+
+
+
+1. [__Barcode linkage__]{.orange} if `EAN` found in `Open Food Facts`
+1. [__Fuzzy matching__]{.orange} in `Open Food Facts` products sharing same `COICOP` (see [our classification algorith](#fasttext))
+1. [__Fuzzy matching__]{.orange} in whole `Open Food Facts`
+1. [__Fuzzy matching__]{.orange} in whole `CIQUAL` & `Wikipedia` dictionaries (normalized named products)
+
+:::{.callout-warning}
+
+## Important point
+
+- [__Conservative validation criteria__]{.orange} to [__exclude false positives__]{.orange} using:
+    + [Levenshtein distance]{.blue2}
+    + [Word embeddings]{.blue2}
+
+:::
+
+## Textual distance is not good enough {.smaller}
+
+- Textual distance measures based on [__Levensthein and TF-IDF distance__]{.orange} : 
+    + Tends to choose products that share same letters or words
+    + Gives false positives
+
+. . .
+
+- Sometimes we want to find [__synonyms__]{.orange}:
+    + e.g. `Ricard` and `Pastis`
+    + Would be false negatives with textual distance
+
+:::{.callout-tip}
+
+## Idea
+
+- Need a complementary measure, based on [__word embeddings__]{.green2}
+    + Words can be closed in semantic space...
+    + ... while not sharing common words
+
+:::
+
+
+
+## Siamese neural network
+
+- Siamese neural networks are supervised methods based on [pair comparison]{.orange}
+
+```{r}
+#| eval: false
+
+url1 = "https://static.wamiz.com/images/animaux/chiens/large/bouledogue-francais.jpg"
+url2 = "https://fanimalo.com/wp-content/uploads/2019/11/Bouledogue-franc%CC%A7ais-HQ-2-1.jpg"
+url3 = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Doug_the_Pug_NYC.jpg/1024px-Doug_the_Pug_NYC.jpg"
+url4 = "https://upload.wikimedia.org/wikipedia/commons/e/ee/Grumpy_Cat_by_Gage_Skidmore.jpg"
+
+tbl_img <- data.frame(
+  name = c("", ""),
+  logo = ""
+)
+tbl_img %>%
+  kbl(booktabs = T, col.names = NULL) %>%
+  kable_paper(full_width = F) %>%
+  column_spec(1, image = spec_image(c(url1, url3), 500, 500)) %>%
+  column_spec(2, image = spec_image(c(url2, url4), 500, 500))
+```
+
+
+
+```{r}
+#| eval: false
+#| label: two-pomeranians
+#| fig-show: hold
+#| out-width: 25%
+#| layout-nrow: 2
+
+knitr::include_graphics(url1)
+knitr::include_graphics(url2)
+knitr::include_graphics(url3)
+knitr::include_graphics(url4)
+```
+
+## Siamese neural network {.smaller #siamese}
+
+:::{.callout-tip}
+
+__We have a way to learn to link scanner and crowdsourced labels !__
+
+- Using [barcode linkage]{.green2} (step 1) as [training set]{.green2}
+- $\approx$ [150,000 pairs]{.green2} to learn from
+
+| Scanner data | Open Food Facts |
+|----------|----------|
+| Beurre aux truffes | Beurre aux truffes |
+| Ricard FA18 | Pastis de Marseille |
+| Tartiflette William Saurin | Tartiflette au reblochon |
+
+::: 
+
+. . .
+
+- Model performs relatively well (see [results](#siamese-results))
+
+. . .
+
+- Implemented using `PyTorch`:
+    + [Transfer learning]{.orange} from our COICOP classifier (`FastText` embedding)
+
+
+
+
+# Results
+
+## Evaluating word embedding {#siamese-examples .smaller}
+
+- Good match:
+    + [__Both measures high__]{.orange}...
+    + but sometimes [__embedding helps__]{.orange}
+
+![](header.png)
+
+- More general performance measure [here](#siamese-result-figure)
+
+## Linkage share ([see as Figure](#linkage-share-fig)) {#linkage-share}
+
+- Fuzzy matching helps to complete linkage (see [quality here](#quality))
+- $\approx$ [__98%__]{.orange} imputed value
+
+```{r}
+library(formattable)
+table_share_CA <- data.table::fread("./input/share_CA.csv")
+
+cols = colnames(table_share_CA)[colnames(table_share_CA) != "step"]
+table_share_CA[, c(cols) := lapply(.SD, function(x) formattable::color_bar("lightgreen")(x)), .SDcols = cols]
+
+kbl(table_share_CA,
+    escape = FALSE,
+    caption  = "Share of products and revenues covered by each linkage step (energy nutrient)" ,
+    col.names = c("Linkage step", rep(c("Products sold (%)", "Revenue (%)"), 3))) %>%
+  kable_classic() %>%
+  add_header_above(c(" " = 1, "Casino" = 2, "Franprix" = 2, "Monoprix" = 2))
+```
+
+
+
+# Conclusion
+
+## Fuzzy matching can be performed on high dimensional sources {.smaller}
+
+- Specificity of our corpus: great [diversity]{.orange} of variations of [close labels]{.orange}
+    + e.g. : [_"Coca-Cola 6x33CL"_]{.blue2} can vs [_"Coca Cola 1.5L bottle"_]{.blue2}
+    + [__Preprocessing__]{.orange} vital to [__harmonize__]{.orange} products labels !
+
+. . .
+
+- Trade-off between :
+    + [_flexible matching_]{.blue2}: selection of [false positives]{.orange}
+    + [_conservative selection criteria_]{.blue2}: selection of [false negatives]{.orange}.
+    
+    
+. . .
+
+- [Compromise]{.orange} to allow similarities despite different wordings:
+    + [Syntactic measures]{.blue2} (TF-IDF measures, n-grams, Levensthein distance)
+    + [Semantic criteria]{.blue2} (neural network to build an embedding)
+
+. . .
+
+- Impute nutritional values for more than [__98%__]{.orange} of the products.
+
+
+
+## What are the perspectives ? {.smaller}
+
+- We can take advantage of crowd-sourced data to enrich scanner data:
+    + At European level, scanner data automatically collected for CPI^[Consumer Price Index (CPI) is used to compute inflation rate] ;
+    + [__Decompose CPI__]{.orange} by family of products.
+
+. . .
+
+- When producing consumer survey data (e.g. HCFS):
+    + [__Automatic linkage using label name__]{.orange} with information from auxiliary sources ;
+    + Reduce amount of information collected from households
+
+. . .
+
+- With such linkage, [__new research__]{.orange} made possible :
+  + Fine geographic granularity studies on consumption
+
+
+# Additional content
+
+## `FastText` classification model: justification (back to [content](#linkage))
+
+:::{.callout-tip}
+
+When performing linkage, [__blocking variable__]{.green2} useful :
+
+- Increase result [pertinence]{.orange} {{< fa brands searchengin >}}
+- Increase search [speed]{.orange}  {{< fa gauge-high >}}
+
+:::
+
+. . . 
+
+Recognize `COICOP`^[Classification of Individual Consumption According to Purpose (`COICOP`) is an official classification used to produce aggregated statistics for National Accounts] from products labels:
+
+- [`FastText`](https://fasttext.cc/) neural network model
+- Trained on [Consumer Price Index (CPI) scanner data]{.orange}
+- Exemples [here](#examples-coicop)
+
+:::{.callout-important}
+
+__Never access to the training dataset !__
+
+:::
+
+    
+
+
+## `FastText` classification model: exemples (back to [content](#linkage)) {#examples-coicop} 
+
+<br><br>
+
+```{r}
+example_prediction_label <- data.table::fread("./input/example_prediction_label.csv")
+
+kbl(
+    example_prediction_label[,.SD,.SDcols = c("LIBELLE", "libel_clean_relevanc", "prediction", "LibelEnglish")],
+    col.names = c("Initial label", "Tokenized label", "COICOP", "Label")
+    ) %>%
+    kable_classic_2(full_width = FALSE, html_font = "Cambria") %>%
+    row_spec(0, bold = TRUE, align = "center")
+```
+
+
+## Pipeline implementation ([back to content](#linkage)) {#implementation .smaller}
+
+`Python` {{< fa brands python >}} controls this polyglot _pipeline_ (`foodbowl` `r emo::ji('ramen')` package):
+
+::: {.incremental}
+
+- [Handles connection]{.orange} with `ElasticSearch` and `S3` ;
+- Transforms datasets into [`ElasticSearch` requests]{.orange} ;
+- Restructures [search results]{.orange} from `ElasticSearch` ;
+- [Checks]{.orange} and [validates/refuses]{.orange} linked labels (textual distance or `PyTorch` trained word embedding)
+
+:::
+
+:::{.callout-note}
+
+## Perspective
+
+Future work needed to make public our models (maybe using `FastAPI`)
+
+:::
+
+## Exemples of linkage (back to [content](#siamese-examples)) {#siamese-result}
+
+```{r tab-exemples-elastic}
+tab_exemples_elastic <- data.table::fread("./input/tab_exemples_elastic.csv")
+
+tab_exemples_elastic$energy_100g <- color_bar("#fc7756")(tab_exemples_elastic$energy_100g)
+tab_exemples_elastic[, prediction := NULL]
+
+kbl(tab_exemples_elastic,
+    caption = "Random examples of the values linked between sources",
+    escape = FALSE,
+    col.names = c("Original Label", "Preprocessed label", "Preprocessed label", "Energy (by 100g)")) %>%
+  kable_classic() %>%
+  add_header_above(c("RelevanC label" = 2, "Open Food Facts label" = 1, "Nutrients" = 1),
+                   bold = TRUE) %>%
+  row_spec(0, bold = TRUE, align = "center")
+```
+
+## Siamese neural network performance (back to [content](#siamese-examples)) {.smaller}
+
+![](barplot_siamese_coicop.png)
+
+
+:::{.callout-warning}
+
+Same product can be present with slightly different names in `Open Food Facts`.
+These duplicates could be admissible pairs. However, here they are considered
+__as inadmissible as would be any other product__.
+
+:::
+
+## Linkage quality ([back to content](#linkage-share)) {#quality}
+
+
+![](violin_step.png)
+
