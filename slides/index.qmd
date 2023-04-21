@@ -141,16 +141,11 @@ using [__advanced fuzzy matching methods__]{.blue2}
 1. [Harmonize]{.orange} different sources ;
 1. [Identify non-food products]{.orange} despite filtering categories.
 
-```{r}
-#| fig-label: Wordcloud-relevanc
-#| layout-ncol: 2
-#| fig-cap: Wordclouds __before__ preprocessing
-#| fig-subcap: 
-#|   - "Scanner data (`RelevanC`)"
-#|   - "Crowd-sourced nutritional data (`Open Food Facts`)"
-magick::image_read("img/wordcloud_relevanc_start.png")
-magick::image_read("img/wordcloud_openfood_start.png")
-```
+::: {layout-ncol=2}
+![Scanner data (`RelevanC`)](img/wordcloud_relevanc_start.png)
+
+![Crowd-sourced nutritional data (`Open Food Facts`)](img/wordcloud_openfood_start.png)
+:::
 
 ## Preprocessing ([Details](#data-cleaning-examples)) {.smaller}
 
@@ -160,15 +155,12 @@ magick::image_read("img/wordcloud_openfood_start.png")
 <input type="checkbox" checked> [Harmonize]{.orange} different sources ;  </input><br>
 <input type="checkbox" checked> [Identify non-food products]{.orange} despite filtering categories.</input>
 
-```{r}
-#| layout-ncol: 2
-#| fig-cap: Wordclouds __after__ preprocessing
-#| fig-subcap: 
-#|   - "Scanner data (`RelevanC`)"
-#|   - "Crowd-sourced nutritional data (`Open Food Facts`)"
-magick::image_read("img/wordcloud_relevanc_clean.png")
-magick::image_read("img/wordcloud_openfood_clean.png")
-```
+::: {layout-ncol=2}
+![Scanner data (`RelevanC`)](img/wordcloud_relevanc_clean.png)
+
+![Crowd-sourced nutritional data (`Open Food Facts`)](img/wordcloud_openfood_clean.png)
+:::
+
 
 # Linkage methodology
 
