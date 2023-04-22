@@ -33,7 +33,6 @@ self-contained: true
 
 ```{r}
 library(kableExtra)
-library(magick)
 ```
 
 ## Introduction

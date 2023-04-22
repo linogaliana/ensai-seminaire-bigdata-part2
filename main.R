@@ -3,7 +3,6 @@ library(targets)
 
 tar_make()
 
-library(magick)
 library(formattable)
 
 source("./R/functions.R")
